@@ -1,8 +1,8 @@
 package backoffice_controllers
 
 import (
+	"html/template"
 	"net/http"
-	"text/template"
 )
 
 type DashboardController struct {
@@ -11,10 +11,10 @@ type DashboardController struct {
 
 func (c *DashboardController) Index(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
-		"title": "Dashboard",
+		"Title": "Dashboard Index",
 	}
 
-	err := c.Templates.ExecuteTemplate(w, "backoffice/pages/dashboard/index.html", data)
+	err := c.Templates.ExecuteTemplate(w, "index.html", data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

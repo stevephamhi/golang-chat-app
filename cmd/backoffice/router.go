@@ -2,7 +2,8 @@ package backoffice
 
 import (
 	"chatgame/config"
-	backoffice_handlers "chatgame/modules/backoffice/dashboard/handlers"
+	dashboard_handlers "chatgame/modules/backoffice/dashboard/handlers"
+	user_handlers "chatgame/modules/backoffice/user/handlers"
 	"database/sql"
 	"log"
 	"net/http"
@@ -25,9 +26,13 @@ func NewServer(addr string, db *sql.DB) *BackofficeServer {
 func Run(s *BackofficeServer) *mux.Router {
 	router := mux.NewRouter()
 
-	subrouter := router.PathPrefix("/backoffice/api/v1").Subrouter()
+	websubrouter := router.PathPrefix("/").Subrouter()
 
-	subrouter.HandleFunc("/ping", HealthCheckHandler).Methods(http.MethodGet)
+	dashboardHandler := dashboard_handlers.NewHandler(s.db)
+	dashboardHandler.RegisterRoutes(websubrouter)
+
+	userHandler := user_handlers.NewHandler(s.db)
+	userHandler.RegisterRoutes(websubrouter)
 
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(config.Env.BackoffieStaticDir))))
 
@@ -35,8 +40,6 @@ func Run(s *BackofficeServer) *mux.Router {
 
 	log.Printf("Backoffice server running on %s", backofficePort)
 	log.Fatal(http.ListenAndServe(backofficePort, router))
-
-	backoffice_handlers.DashboardHandler(router, s.db)
 
 	return router
 }

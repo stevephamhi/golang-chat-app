@@ -25,7 +25,7 @@ func InitConfig() *Config {
 
 	return &Config{
 		BackoffieStaticDir:  GetEnv("BACKOFFICE_STATIC_DIR"),
-		BackofficeServePort: GetEnv("BACKOFFICE_SERVE_PORT"),
+		BackofficeServePort: ":" + GetEnv("BACKOFFICE_SERVE_PORT"),
 		DBDriver:            GetEnv("DB_DRIVER", "mysql"),
 		DBUser:              GetEnv("DB_USERNAME"),
 		DBPassword:          GetEnv("DB_PASSWORD"),

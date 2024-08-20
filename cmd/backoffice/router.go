@@ -2,8 +2,8 @@ package backoffice
 
 import (
 	"chatgame/config"
-	dashboard_handlers "chatgame/modules/backoffice/dashboard/handlers"
-	user_handlers "chatgame/modules/backoffice/user/handlers"
+	backoffice_dashboard_handler "chatgame/internal/backoffice/handlers/dashboard"
+	backoffice_user_handler "chatgame/internal/backoffice/handlers/user"
 	"database/sql"
 	"log"
 	"net/http"
@@ -28,11 +28,8 @@ func Run(s *BackofficeServer) *mux.Router {
 
 	websubrouter := router.PathPrefix("/").Subrouter()
 
-	dashboardHandler := dashboard_handlers.NewHandler(s.db)
-	dashboardHandler.RegisterRoutes(websubrouter)
-
-	userHandler := user_handlers.NewHandler(s.db)
-	userHandler.RegisterRoutes(websubrouter)
+	backoffice_dashboard_handler.NewHandler().RegisterRoutes(websubrouter)
+	backoffice_user_handler.NewHandler().RegisterRoutes(websubrouter)
 
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(config.Env.BackoffieStaticDir))))
 
